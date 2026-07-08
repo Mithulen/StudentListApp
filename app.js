@@ -5,7 +5,7 @@ const app = express();
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: 'Mithulen2008',
+    password: 'Mithulen2008', // Make sure this matches your MySQL password
     database: 'c237_studentlistapp'
 });
 
@@ -23,8 +23,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // 1. Home Route - Fetch all students
 app.get('/', (req, res) => {
-    const sql = 'SELECT * FROM student'; // FIXED: table name 'student'
-    
+    const sql = 'SELECT * FROM student';
+
     connection.query(sql, (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
@@ -37,14 +37,14 @@ app.get('/', (req, res) => {
 // 2. Individual Student Route
 app.get('/student/:id', (req, res) => {
     const studentId = req.params.id;
-    const sql = 'SELECT * FROM student WHERE studentid = ?'; // FIXED: 'studentid' and 'student'
-    
+    const sql = 'SELECT * FROM student WHERE studentid = ?';
+
     connection.query(sql, [studentId], (error, results) => {
         if (error) {
             console.error('Database query error:', error.message);
             return res.status(500).send('Error Retrieving student by ID');
         }
-        
+
         if (results.length > 0) {
             res.render('student', { student: results[0] });
         } else {
@@ -60,14 +60,62 @@ app.get('/addStudent', (req, res) => {
 
 // 4. Add Student Form Submission
 app.post('/addStudent', (req, res) => {
-    // FIXED: Fields match schema columns: name, dob, contact, image
     const { name, dob, contact, image } = req.body;
     const sql = 'INSERT INTO student (name, dob, contact, image) VALUES (?, ?, ?, ?)';
-    
+
     connection.query(sql, [name, dob, contact, image], (error, results) => {
         if (error) {
             console.error("Error adding student:", error);
             res.status(500).send('Error adding student');
+        } else {
+            res.redirect('/');
+        }
+    });
+});
+
+// 5. Edit Student Form View
+app.get('/editStudent/:id', (req, res) => {
+    const studentId = req.params.id;
+    const sql = 'SELECT * FROM student WHERE studentid = ?';
+    
+    connection.query(sql, [studentId], (error, results) => {
+        if (error) {
+            console.error('Database query error:', error.message);
+            return res.send('Error retrieving student by ID');
+        }
+        if (results.length > 0) {
+            res.render('editStudent', { student: results[0] });
+        } else {
+            res.send('Student not found');
+        }
+    });
+});
+
+// 6. Edit Student Form Submission
+app.post('/editStudent/:id', (req, res) => {
+    const studentId = req.params.id;
+    const { name, dob, contact } = req.body;
+    const sql = 'UPDATE student SET name = ?, dob = ?, contact = ? WHERE studentid = ?';
+    
+    connection.query(sql, [name, dob, contact, studentId], (error, results) => {
+        if (error) {
+            console.error("Error updating student:", error);
+            res.send('Error updating student');
+        } else {
+            res.redirect('/');
+        }
+    });
+});
+
+// 7. Delete Student Route
+app.get('/deleteStudent/:id', (req, res) => {
+    const studentId = req.params.id;
+    const sql = 'DELETE FROM student WHERE studentid = ?';
+    
+    connection.query(sql, [studentId], (error, results) => {
+        if (error) {
+            console.error("Error deleting student:", error);
+            res.send('Error deleting student');
         } else {
             res.redirect('/');
         }
