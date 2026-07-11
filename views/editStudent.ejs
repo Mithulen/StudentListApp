@@ -1,62 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Student</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Update Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="bg-light">
-  <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-5">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/">🎓 StudentList App</a>
-    </div>
-  </nav>
+<body>
+    <nav class="navbar navbar-dark bg-dark mb-4">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">Student List App</a>
+            <a class="nav-link text-white" href="/addStudent">Add new student</a>
+        </div>
+    </nav>
 
-  <div class="container mt-5">
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <% if (student) { %>
-          <div class="card shadow">
-            <div class="card-header bg-secondary text-white">
-              <h3 class="mb-0">Update Student</h3>
+    <div class="container w-50 text-center">
+        <h2 class="mb-4">Update Student</h2>
+        <form action="/editStudent/<%= student.studentid %>" method="POST" enctype="multipart/form-data">
+            
+            <div class="mb-3 text-start">
+                <label class="form-label">Student Name:</label>
+                <input type="text" class="form-control" name="studentName" value="<%= student.studentName %>" required>
             </div>
-            <div class="card-body">
-              <form action="/editStudent/<%= student.studentid %>" method="POST">
-                <div class="mb-3">
-                  <label for="name" class="form-label">Student Name</label>
-                  <input type="text" class="form-control" id="name" name="name" value="<%= student.name %>" required>
-                </div>
-                <div class="mb-3">
-                  <label for="dob" class="form-label">Date of Birth</label>
-                  <input type="date" class="form-control" id="dob" name="dob" 
-                    value="<%= student.dob ? new Date(student.dob).toISOString().split('T')[0] : '' %>" required>
-                </div>
-                <div class="mb-3">
-                  <label for="contact" class="form-label">Contact Number</label>
-                  <input type="text" class="form-control" id="contact" name="contact" maxlength="10" value="<%= student.contact %>" required>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label">Current Image</label>
-                  <div class="text-center">
-                    <img src="<%= student.image %>" alt="<%= student.name %>" class="img-fluid rounded border" style="max-height: 200px;">
-                  </div>
-                </div>
-                <div class="d-grid gap-2">
-                  <button type="submit" class="btn btn-warning">Update Student</button>
-                  <a href="/" class="btn btn-secondary">Cancel</a>
-                </div>
-              </form>
+            <div class="mb-3 text-start">
+                <label class="form-label">D.o.B:</label>
+                <input type="text" class="form-control" name="dob" value="<%= student.dob %>" required>
             </div>
-          </div>
-        <% } else { %>
-          <div class="alert alert-warning text-center">
-            <h5>No student found.</h5>
-            <a href="/" class="btn btn-secondary mt-3">Back to Home</a>
-          </div>
-        <% } %>
-      </div>
+            <div class="mb-3 text-start">
+                <label class="form-label">Contact:</label>
+                <input type="text" class="form-control" name="contact" value="<%= student.contact %>" required>
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label">Current Image:</label><br>
+                <input type="text" class="form-control mb-2" name="currentImage" value="<%= student.image %>" readonly>
+                <div class="text-center">
+                    <img src="/images/<%= student.image %>" width="120" class="mb-3 border rounded p-1">
+                </div>
+                <label class="form-label">New Image:</label>
+                <input type="file" class="form-control" name="image" accept="image/*">
+            </div>
+
+            <button type="submit" class="btn btn-outline-dark px-4">Update Student</button>
+            <br>
+            <a href="/" class="text-decoration-none mt-3 d-inline-block">Back</a>
+        </form>
     </div>
-  </div>
 </body>
 </html>
